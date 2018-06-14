@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Visão Alunos</title>
+        <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+        <link href="styles.css" rel="stylesheet" />
+
+        <!-- <script src="https://unpkg.com/d3"></script> -->
+        <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+        <!--<script src="https://unpkg.com/event-drops"></script>        -->
+        <script src="eventdrops_modified.js"></script> 
+        <script src="moment.min.js"></script>       
+    </head>
+    <body>
+        <h1>Eventos por aluno</h1>
+        <div id="eventdrops-demo" style="width: 80%;"></div>
+        <p class="infos">
+            <span id="numberCommits"></span> eventos <span class="light">encontrados entre</span> <br />
+            <span id="zoomStart"></span> <span class="light">e</span> <span id="zoomEnd"></span>
+        </p>
+        <footer>
+            <p>
+                -- Footer aqui --
+            </p>
+        </footer>
+        
+        <script type="text/javascript">
+
+            const numberCommitsContainer = document.getElementById('numberCommits');
+            const zoomStart = document.getElementById('zoomStart');
+            const zoomEnd = document.getElementById('zoomEnd');
+
+            const updateCommitsInformation = chart => {
+                const filteredData = chart
+                    .filteredData()
+                    .reduce((total, repo) => total.concat(repo.data), []);
+
+                numberCommitsContainer.textContent = filteredData.length;
+                zoomStart.textContent = humanizeDate(chart.scale().domain()[0]);
+                zoomEnd.textContent = humanizeDate(chart.scale().domain()[1]);
+
+                //#TODO implementar escala de cores para eventos
+                
+                d3.select("svg").selectAll("circle").attr("fill", function(d){
+                    if (['loggedin', 'loggedinas'].includes(d.action)) return 'black'
+                    else if (['loggedout'].includes(d.action)) return 'gray'
+                    //mensagens enviadas e recebidas (lidas)
+                    else if (d.component == 'core' && ['viewed', 'sent'].includes(d.action) && d.target == 'message') return 'blue'
+                    //recursos visualizados
+                    //  mod_folder > viewed
+                    //  mod_glossary > deleted/created/updated > entry
+                    //  mod_glossary > viewed > course_module
+                    //  mod_resource > Viewed > course_module
+                    //  mod_url > viewed > course_module
+                    //  report_log > viewed > report/user_report
+                    //  core > viewed > course, course_resources_list
+                    else if ((d.component == 'mod_folder' && ['viewed'].includes(d.action)) ||
+                        (d.component == 'mod_glossary' && ['deleted','created','updated'].includes(d.action) && d.target == 'entry') ||
+                        (d.component == 'mod_glossary' && ['viewed'].includes(d.action) && d.target == 'course_module') ||
+                        (d.component == 'mod_resource' && ['viewed'].includes(d.action) && d.target == 'course_module') ||
+                        (d.component == 'mod_url' && ['viewed'].includes(d.action) && d.target == 'course_module') ||
+                        (d.component == 'report_log' && ['viewed'].includes(d.action) && ['report','user_report'].includes(d.target)) ||
+                        (d.component == 'core' && ['viewed'].includes(d.action) && ['course', 'course_resources_list'].includes(d.target))
+                        ) return 'green'
+                    //forum - visualizou
+                    else if ((d.component == 'mod_forum' && ['viewed'].includes(d.action)) || 
+                        (d.component == 'mod_forum' && ['searched'].includes(d.action) && d.target == 'course')
+                        ) return 'yellow'
+                    //forum - acompanhou
+                    else if ((d.component == 'mod_forum' && ['created','deleted'].includes(d.action) && d.target == 'subscription') ||
+                        (d.component == 'mod_forum' && ['disabled','enabled'].includes(d.action) && d.target == 'readtracking')
+                        ) return 'orange'
+                    //forum - colaborou
+                    else if (d.component == 'mod_forum' && 
+                        ['deleted','created','updated'].includes(d.action) && 
+                        ['post', 'discussion'].includes(d.target)
+                        ) return 'red'
+                    //demais eventos
+                    else return 'white';
+                });
+            };
+
+            const tooltip = d3
+                .select('body')
+                .append('div')
+                .classed('tooltip', true)
+                .style('opacity', 0)
+                .style('pointer-events', 'auto');
+
+            // Example display: September 4 1986 8:30 PM
+            const humanizeDate = (date) => {
+                const monthNames = [
+                    'Jan.',
+                    'Fev.',
+                    'Março',
+                    'Abr.',
+                    'Mai',
+                    'Jun',
+                    'Jul.',
+                    'Ago.',
+                    'Set.',
+                    'Out.',
+                    'Nov.',
+                    'Dez.',
+                ];
+
+                return `
+                    ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}
+                    ${date.getHours()}:${date.getMinutes()}
+                `;
+            };    
+
+            function parseBrDate(date){
+                //uses moment.js
+                parsed_date = moment(date, 'YYYY-MM-DD HH:mm:ss');
+                return parsed_date.toDate();    
+            }  
+
+
+
+            const chart = eventDrops({
+                d3,
+                //range: { start: new Date('January 1, 2015'), end: new Date('July 1, 2015')},
+                range: { start: new Date('Feb 23, 2015'), end: new Date('March 1, 2015')},
+                metaballs: false,
+                //customColorScale: 'blue', //eventsColorScale,
+                zoom: {
+                    onZoom: () => updateCommitsInformation(chart)
+                },
+                drop: {
+                    date: d => parseBrDate(d.t),
+                    onMouseOver: log => {
+                        tooltip
+                            .transition()
+                            .duration(200)
+                            .style('opacity', 1)
+                            .style('pointer-events', 'auto');
+
+                        tooltip
+                            .html(
+                                `
+                                <div class="content">
+                                    <h3 class="message">Evento: ${log.action}</h3>
+                                    <p> timestamp: ${log.t} </p>
+                                    <p> target: ${log.target} </p> 
+                                    <p> objecttable: ${log.objecttable} </p>
+                                </div>
+                            `
+                            )
+                            .style('left', `${d3.event.pageX - 30}px`)
+                            .style('top', `${d3.event.pageY + 20}px`);
+                    },
+                    onMouseOut: () => {
+                        tooltip
+                            .transition()
+                            .duration(500)
+                            .style('opacity', 0)
+                            .style('pointer-events', 'none');
+                    },
+                },
+            });
+
+
+
+            /*
+            d3.json("data.json", function(error, repositories){
+
+                repositoriesData = repositories.map(repository => ({
+                    name: repository.name,
+                    data: repository.commits,
+                }));
+
+                d3
+                    .select('#eventdrops-demo')
+                    .data([repositoriesData])
+                    .call(chart);
+
+                updateCommitsInformation(chart);
+            });*/
+
+            var dataset_copy;
+
+
+            d3.text('data_disc-148_letras-2P-20151-Garanhuns_novo.csv', function(error, rawData){
+                var dsv = d3.dsvFormat(';');
+                var csv = dsv.parse(rawData);
+
+                //group by userid
+                nestedData = d3.nest()
+                  .key(function(d) { return d.userid; })
+                  .entries(csv);
+
+                console.log(nestedData);
+
+                //rename
+                studentData = nestedData.map(log => ({
+                    name: log.key, //userid #TODO trocar para nome do usuario
+                    data: log.values //logs
+                }));
+
+                console.log(studentData);
+
+                dataset_copy = studentData;
+
+                d3
+                    .select('#eventdrops-demo')
+                    .data([studentData.slice(0, 10)])
+                    .call(chart);
+
+                updateCommitsInformation(chart);
+            });
+
+        </script>
+    </body>
+</html>
+
+
+
+
+
