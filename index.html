@@ -1,0 +1,168 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>ForumVis</title>
+		<script src="https://d3js.org/d3.v3.min.js"></script>
+		
+		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="sequences.css">
+		<link rel="stylesheet" href="timeline-chart.css" />
+		<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" /> -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.css" />	
+
+	</head>
+
+	<body>
+		<header>ForumVis</header>
+
+		<div class="tab">
+			<button class="tablinks" id="btGeral" onclick="openTab(event, 'Geral')">Geral</button>
+			<button class="tablinks" id="btAlunos" onclick="openTab(event, 'Alunos')">Alunos</button>
+		</div>
+		
+		<!-- SUNBURST -->
+		<div id="Geral" class="tabcontent">
+			<div id="sequence"></div>
+			<div id="sunburst-items">
+				<div id="chart">
+				  <div id="explanation" style="visibility: hidden;">
+					<span id="percentage"></span><br/>
+					of visits begin with this sequence of pages
+				  </div>
+				</div>
+	
+				<div id="sidebar">
+					<!-- <input type="checkbox" id="togglelegend"> Legend<br/> -->
+					<div class="legenda-sunburst">Legenda:&nbsp;</div>
+					<div class="legenda-sunburst" style="background-color: cyan; color: black;">Mensagem</div>
+					<div class="legenda-sunburst" style="background-color: green; color: white;">Vis. de Recurso</div>
+					<div class="legenda-sunburst" style="background-color: yellow; color: black;">Vis. de Fórum</div>
+					<div class="legenda-sunburst" style="background-color: red; color: white;">Postagem</div>
+					<!-- <div id="legend" style="visibility: hidden;"></div> -->
+				</div>		  
+			</div>
+		</div>
+		
+		<!-- TIMELINE -->
+		<div id="Alunos" class="tabcontent">
+			<p>Preencha os filtros abaixo:</p>
+
+			<nav class="nav-combos">
+				<label for="cbdisciplina" class="labelCombos">Disciplina<span class="fb-required">*</span></label>
+				<select class="combos-filtro" name="cbdisciplina" id="cbdisciplina" required="required" aria-required="true" disabled>
+					<option value="deafult" id="cbdisciplinas-default" selected value> Literatura Portuguesa </option>
+				</select>
+
+				<label for="cbforum" class="labelCombos">Fórum<span class="fb-required">*</span></label>
+				<select class="combos-filtro" name="cbforum" id="cbforum" required="required" aria-required="true" onchange="loadForumStudentList()"></select>
+				
+				<button onclick="btFilterClick()">Visualizar</button>
+				
+				<div class="nav-students">
+					<label for="studentsList-div" class="studentsListMainLabel">Alunos</label>
+					<div id="studentsList-div"></div>
+				</div>		
+			</nav>			
+
+		</div>
+		<section id="tl-section" flex flex-full-center>
+			<div id="timeline-div"></div>
+			<div id="legenda-div">
+				<div class="legenda">Legenda:&nbsp;</div>
+				<div class="legenda" style="background-color: black; color: white;">Login</div>
+				<div class="legenda" style="background-color: gray; color: black;">Logout</div>
+				<div class="legenda" style="background-color: cyan; color: black;">Mensagem</div>
+				<div class="legenda" style="background-color: green; color: white;">Vis. de Recurso</div>
+				<div class="legenda" style="background-color: yellow; color: black;">Vis. de Fórum</div>
+				<div class="legenda" style="background-color: orangered; color: black;">Acomp. de Fórum</div>
+				<div class="legenda" style="background-color: red; color: white;">Postagem</div>
+				<div class="legenda" style="background-color: purple; color: white;">Outros</div>
+			</div>
+		</section>
+
+		<footer>
+			--- Visualização de Dados 2018.1 - CIn-UFPE ---
+		</footer>
+
+		<div id="tl-tooltip">
+			<h3 class="tl-tooltip-title"><strong>Evento: </strong><span id="tooltip-event-name"></span></h3>
+			<p> <strong>Início: </strong><span id="tooltip-timeStart"></span></p>
+			<p> <strong>Fim: </strong><span id="tooltip-timeEnd"></span></p>
+			<p> <strong>Target: </strong><span id="tooltip-target"></span></p> 
+			<p> <strong>Objecttable: </strong><span id="tooltip-objecttable"></span></p>        
+		</div>    
+
+
+		<!-- ---------- SCRIPTS ----------- -->
+
+		<!-- Timeline -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.js"></script>
+		<script src="constants.js"></script>
+		<script src="timeline-chart.js"></script>
+		<script src="moment.min.js"></script>
+		
+		<script src="timeline_aux_functions.js"></script>
+		<script src="timeline_filter_functions.js"></script>
+		<script src="timeline-main.js"></script>
+		
+		<!-- Sunburst -->
+		<!-- remover --><script src="aux_scripts/genearate_sunburst_dataset.js"></script> 
+		<script type="text/javascript" src="sequences.js"></script>
+		
+		<!-- Geral -->
+		<script type="text/javascript" src="main.js"></script>
+		<script type="text/javascript">	 
+			'use strict' 
+
+			function openTab(evt, tabName) {
+				var i, tabcontent, tablinks;
+				tabcontent = document.getElementsByClassName("tabcontent");
+				for (i = 0; i < tabcontent.length; i++) {
+					tabcontent[i].style.display = "none";
+				}
+				tablinks = document.getElementsByClassName("tablinks");
+				for (i = 0; i < tablinks.length; i++) {
+					tablinks[i].className = tablinks[i].className.replace(" active", "");
+				}
+				document.getElementById(tabName).style.display = "block";
+				evt.currentTarget.className += " active";
+
+				//gambiarra pois se colocar a section do timeline dentro da tab dah erro
+				if (tabName == "Alunos"){
+					document.getElementById("tl-section").style.display = "block";
+				} else  {
+					document.getElementById("tl-section").style.display = "none";
+				}
+			}
+
+			//retorna lista dos estudantes selecionados 
+			function getSelectedStudents(){
+				let studentsDiv = document.getElementById("studentsList-div");
+				let selectedStudents = [];
+
+				Array.from(studentsDiv.children).forEach(innerDiv => {
+					Array.from(innerDiv.children).forEach(element => {
+						if (element.id.startsWith("ck") && element.checked){
+							selectedStudents.push(element.value);
+						}
+					})
+				});
+				
+				return selectedStudents;				
+			}
+			
+			function btFilterClick(){
+				var filter_options_local = {
+					forum_id: document.getElementById("cbforum").value,
+					selectedStudents: getSelectedStudents()
+				};
+
+				console.log(filter_options_local);
+				d3.select("#legenda-div").style("display","block");
+				drawTimeline(filter_options_local);					
+			}
+
+			document.getElementById("btGeral").click();
+		</script>
+	</body>
+</html>
