@@ -57,7 +57,7 @@
             }).onVizChange(bringEventsToFront(EVENT_TYPES.FORUM_COLABORACAO)); //deixa sempre os eventos de colaboracao no front
     
             createGradientsDefs();
-            setEventsColor();
+            setEventsColor(options.forum_id);
             addTooltip();
     
             //esconde linha do tempo
@@ -91,7 +91,7 @@
     }
 
     //colore os eventos de acordo com a classe
-    function setEventsColor() {
+    function setEventsColor(object_id) {
         d3.selectAll(".interval").style('fill', function (d) {
             if (d.isPreColab){
                 return `url(#${d.customClass.concat('_precolab_grad')})`;
@@ -99,10 +99,31 @@
                 return getEventColor(d.customClass);
             }            
         });
-        
+
         d3.selectAll(".dot").style('fill', function (d) {
             return getEventColor(d.customClass);
         });
+
+        //##########destaca eventos relacionados ao forum escolhido
+        //intervals
+        let forum_discussions = d3.map(DATASTORE.forum_infos.filter(function (row) { return row.id_forum == object_id; }),
+                                       function (d) { return d.id_discussion; }
+                                ).keys() ;
+        d3.selectAll(".interval").style('stroke', function (d) {
+            if (d.objectId == object_id || forum_discussions.includes(d.objectId) ){ //forum ou discussion
+                return "black";
+            } 
+        });
+
+        //dots
+        let forum_posts = d3.map(DATASTORE.forum_infos.filter(function (row) { return row.id_forum == object_id; }),
+                                       function (d) { return d.id_post; }
+                                ).keys() ;
+        d3.selectAll(".dot").style('stroke', function (d) {
+            if (d.objectId == object_id || forum_posts.includes(d.objectId) ){
+                return "black";
+            } 
+        });        
     }
 
     function addTooltip(){
