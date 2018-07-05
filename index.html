@@ -25,13 +25,13 @@
 			<div id="sequence"></div>
 			<div id="sunburst-items">
 				<div id="chart">
-				  <div id="explanation" style="visibility: hidden;">
+				  <!-- <div id="explanation" style="visibility: hidden;">
 					<span id="percentage"></span><br/>
 					of visits begin with this sequence of pages
-				  </div>
+				  </div> -->
 				</div>
 	
-				<div id="sidebar">
+				<div id="sidebar">					
 					<!-- <input type="checkbox" id="togglelegend"> Legend<br/> -->
 					<div class="legenda-sunburst">Legenda:&nbsp;</div>
 					<div class="legenda-sunburst" style="background-color: cyan; color: black;">Mensagem</div>
@@ -39,6 +39,10 @@
 					<div class="legenda-sunburst" style="background-color: yellow; color: black;">Vis. de Fórum</div>
 					<div class="legenda-sunburst" style="background-color: red; color: white;">Postagem</div>
 					<!-- <div id="legend" style="visibility: hidden;"></div> -->
+					<div id="explanation" style="visibility: hidden;">						
+						<span id="percentage"></span><br/>
+						seguiram este caminho
+					</div>					
 				</div>		  
 			</div>
 		</div>
@@ -87,9 +91,9 @@
 		<div id="tl-tooltip">
 			<h3 class="tl-tooltip-title"><strong>Evento: </strong><span id="tooltip-event-name"></span></h3>
 			<p> <strong>Início: </strong><span id="tooltip-timeStart"></span></p>
-			<p> <strong>Fim: </strong><span id="tooltip-timeEnd"></span></p>
-			<p> <strong>Target: </strong><span id="tooltip-target"></span></p> 
-			<p> <strong>Objecttable: </strong><span id="tooltip-objecttable"></span></p>        
+			<p id="endTimeP"> <strong>Fim: </strong><span id="tooltip-timeEnd"></span></p>
+			<p id="extraInfo1P" style="display: none"> <strong id="extraInfoTitle1"></strong><span id="extraInfoText1"></span></p> 
+			<p id="extraInfo2P" style="display: none"> <strong id="extraInfoTitle2"></strong><span id="extraInfoText2"></span></p> 
 		</div>    
 
 
@@ -130,6 +134,7 @@
 				//gambiarra pois se colocar a section do timeline dentro da tab dah erro
 				if (tabName == "Alunos"){
 					document.getElementById("tl-section").style.display = "block";
+					loadForumStudentList();
 				} else  {
 					document.getElementById("tl-section").style.display = "none";
 				}

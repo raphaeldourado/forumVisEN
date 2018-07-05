@@ -40,5 +40,6 @@ const color_map = [
 
 const DATASTORE = {
     forum_infos : null,
-    student_names: null
+    student_names: null,
+    raw_logs: null
 }

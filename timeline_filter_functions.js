@@ -1,6 +1,7 @@
 function fillForumCombobox() {
     let raw = d3.map(DATASTORE.forum_infos, function (d) { return d.id_forum +"|"+ d.forum_name; }).keys();
-    let foruns = [{value: -1, text: "Todos"}];
+    //let foruns = [{value: -1, text: "Todos"}]; //desbilitado temporariamente
+    let foruns = [];
     raw.forEach(element => {
         let splitted = element.split("|");
         foruns.push({value: splitted[0], text: splitted[1]});
@@ -64,5 +65,16 @@ function  loadForumStudentList(){
 }
 
 function translateStudentId(id) {
-    return DATASTORE.student_names.filter(d => { return d.userid == id; })[0].user_name;
+    let student = DATASTORE.student_names.filter(d => { return d.userid == id; })[0];
+    return (student === undefined) ? "Não identificado" : student.user_name;
+}
+
+function translateForumId(id) {
+    let forum = DATASTORE.forum_infos.filter(d => { return d.id_forum == id; })[0];
+    return (forum === undefined) ? "Não identificado" : forum.forum_name;
+}
+
+function translateDiscussionId(id) {
+    let discussion = DATASTORE.forum_infos.filter(d => { return d.id_discussion == id; })[0];
+    return (discussion === undefined) ? "Não identificado" : discussion.forum_name; //mostra nome do forum, ao inves da discussion. Mudar talvez depois
 }

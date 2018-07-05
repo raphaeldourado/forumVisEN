@@ -3,69 +3,66 @@
     
     let nestedData, filteredData, timelineData;
 
-    //TODO separar carregamento dos dados do plotting
     function drawTimeline(options){
         //lima grafico antigo
         d3.selectAll("#timeline-div > *").remove();
 
-        d3.csv("data/data_disc-148_letras-2P-20151-Garanhuns.csv", function(raw_data){
-            //group by userid
-            nestedData = d3.nest()
-                .key(function(d) { return d.userid; })
-                .entries(raw_data);
-            
-            //seleciona apenas alunos escolhidos
-            filteredData = nestedData.filter(d=>{return options.selectedStudents.includes(d.key);});
-    
-            //ordena eventos
-            sortEvents(filteredData);
-    
-            //remove eventos com mesmo timestamp
-            removeCollisions(filteredData);
-    
-            //formata dados
-            timelineData = filteredData.map(user_log => ({
-                label: translateStudentId(user_log.key).substring(0, 24)+"...", //trunca para evitar overflow
-                data: format_userlogs(user_log.values)
-            }));
-    
-            //filtra pelo periodo desejado
-            //TODO o array original estah sendo diretamente modificado. Mudar isso na funcao filterTimelineDataByPeriod
-            if (options.forum_id != -1){// -1 == Todos
-                filterTimelineDataByForum(timelineData, options.forum_id);     
-            }
-            
-            //verifica se existem dados para serem plotados
-            let continuePlotting = false;
-            timelineData.forEach((element) => {
-                if(element.data.length > 0){
-                    continuePlotting = true;
-                    element.remove = false;
-                } else {
-                    element.remove = true;
-                }
-            });
-            //remove linhas sem dados
-            timelineData = timelineData.filter(d=>{return d.remove == false});
-    
-            if (continuePlotting){
-                //TODO chamar via botao
-                removeTimeSpacesAndAlign(timelineData);
-                
-                //const timeline = new TimelineChart(element, filtered_timelineData, {
-                const timeline = new TimelineChart(element, timelineData, {
-                    enableLiveTimer: false,
-                    height: 50 * timelineData.length
-                }).onVizChange(bringEventsToFront(EVENT_TYPES.FORUM_COLABORACAO)); //deixa sempre os eventos de colaboracao no front
+        //group by userid
+        nestedData = d3.nest()
+            .key(function(d) { return d.userid; })
+            .entries(DATASTORE.raw_logs);
         
-                createGradientsDefs();
-                setEventsColor();
-                addTooltip();
+        //seleciona apenas alunos escolhidos
+        filteredData = nestedData.filter(d=>{return options.selectedStudents.includes(d.key);});
+
+        //ordena eventos
+        sortEvents(filteredData);
+
+        //remove eventos com mesmo timestamp
+        removeCollisions(filteredData);
+
+        //formata dados
+        timelineData = filteredData.map(user_log => ({
+            label: translateStudentId(user_log.key).substring(0, 24)+"...", //trunca para evitar overflow
+            data: format_userlogs(user_log.values)
+        }));
+
+        //filtra pelo periodo desejado
+        //TODO o array original estah sendo diretamente modificado. Mudar isso na funcao filterTimelineDataByPeriod
+        if (options.forum_id != -1){// -1 == Todos
+            filterTimelineDataByForum(timelineData, options.forum_id);     
+        }
         
-                //esconde linha do tempo
-                d3.select(".x.axis").style("visibility", "hidden");
+        //verifica se existem dados para serem plotados
+        let continuePlotting = false;
+        timelineData.forEach((element) => {
+            if(element.data.length > 0){
+                continuePlotting = true;
+                element.remove = false;
+            } else {
+                element.remove = true;
             }
         });
+        //remove linhas sem dados
+        timelineData = timelineData.filter(d=>{return d.remove == false});
+
+        if (continuePlotting){
+            //TODO chamar via botao
+            removeTimeSpacesAndAlign(timelineData);
+            
+            //const timeline = new TimelineChart(element, filtered_timelineData, {
+            const timeline = new TimelineChart(element, timelineData, {
+                enableLiveTimer: false,
+                height: 50 * timelineData.length
+            }).onVizChange(bringEventsToFront(EVENT_TYPES.FORUM_COLABORACAO)); //deixa sempre os eventos de colaboracao no front
+    
+            createGradientsDefs();
+            setEventsColor();
+            addTooltip();
+    
+            //esconde linha do tempo
+            d3.select(".x.axis").style("visibility", "hidden");
+        }
     }
     
 
@@ -113,20 +110,51 @@
         .on("mousemove", function () { return d3.select("#tl-tooltip").style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px"); })
         .on('mouseover', function (d) {
             d3.select("#tl-tooltip").style("visibility", "visible");
-            d3.select("#tooltip-event-name").text(d.customClass);
+            d3.select("#tooltip-event-name").text(translateCustomClass(d.customClass));
 
+            //basic info
             if (d.type == TimelineChart.TYPE.POINT){
                 d3.select("#tooltip-timeStart").text(moment(d.at_bkp).format('DD/MM/YYYY HH:mm:ss'));
-                d3.select("#tooltip-timeEnd").text("--");
+                setElementVisibility("endTimeP", false);
             } else {
                 d3.select("#tooltip-timeStart").text(moment(d.from_bkp).format('DD/MM/YYYY HH:mm:ss'));
+                setElementVisibility("endTimeP", true);
                 d3.select("#tooltip-timeEnd").text(moment(d.to_bkp).format('DD/MM/YYYY HH:mm:ss'));
-                //d3.select("#tooltip-timeStart").text(moment(d.from).format('DD/MM/YYYY HH:mm:ss') + " || " + moment(d.from_bkp).format('DD/MM/YYYY HH:mm:ss'));
-                //d3.select("#tooltip-timeEnd").text(moment(d.to).format('DD/MM/YYYY HH:mm:ss') + " || " + moment(d.to_bkp).format('DD/MM/YYYY HH:mm:ss'));
             }
 
-            d3.select("#tooltip-target").text(d.target);
-            d3.select("#tooltip-objecttable").text(d.objecttable);
+            //extra info TODO terminar
+            
+            switch (d.customClass) {
+                case EVENT_TYPES.MENSAGEM:
+                    setElementVisibility("extraInfo1P", true);
+                    d3.select("#extraInfoTitle1").text("Destintário: ");
+                    d3.select("#extraInfoText1").text(translateStudentId(d.relateduserid));
+                    break;
+                case EVENT_TYPES.RECURSO_VISUALIZADO:
+                    setElementVisibility("extraInfo1P", true);
+                    d3.select("#extraInfoTitle1").text("Tipo: ");
+                    d3.select("#extraInfoText1").text(d.objecttable || d.target);
+                    break;
+                case EVENT_TYPES.FORUM_VISUALIZACAO:
+                    setElementVisibility("extraInfo1P", true);
+                    d3.select("#extraInfoTitle1").text("Fórum: ");
+                    let name = translateForumId(d.objectId);
+                    if (name == "Não identificado"){
+                        name = translateDiscussionId(d.objectId)
+                    }
+                    d3.select("#extraInfoText1").text(name);
+                    break;
+                case EVENT_TYPES.FORUM_COLABORACAO:
+                    setElementVisibility("extraInfo1P", true);
+                    d3.select("#extraInfoTitle1").text("Tipo: ");
+                    d3.select("#extraInfoText1").text(d.action);
+                    break;
+            
+                default: //para os demais eventos, nao mostrar info extra
+                    setElementVisibility("extraInfo1P", false);
+                    setElementVisibility("extraInfo2P", false);
+                    break;
+            }
         })
         .on('mouseout', function (d) {
             d3.select("#tl-tooltip").style("visibility", "hidden");
@@ -188,6 +216,8 @@
             f_log.target = log.target;
             f_log.objecttable = log.objecttable;
             f_log.objectId = log.objectid;
+            f_log.action = log.action;
+            f_log.relateduserid = log.relateduserid;
 
             //backup do timestamp. 'to' e 'from' serao manipulados no alinhamento
             f_log.real_timestamp = parseBrDate(log.t);            

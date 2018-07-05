@@ -46,7 +46,6 @@ function calculateIntervalEnd(formatted_log, index, all_logs) {
 //trunca intervalos muito longos (possivel incosistencia nos logs)
 function correctLongIntervals(formatted_log){
     if (formatted_log.to.getTime() - formatted_log.from.getTime() > (TRUNC_INTERVAL_AT)){
-        //formatted_log.to = moment(formatted_log.from).add(TRUNCED_INTERVAL_LENGTH_SECONDS, "m").toDate(); //TODO talvez sinalizar visualmente de algum modo essa correção nos dados
         //atualiza tb o to_bkp, para ser mostrado corretamente na interface
         formatted_log.to = formatted_log.to_bkp = new Date(formatted_log.from.getTime() + TRUNCED_INTERVAL_LENGTH_SECONDS); //TODO talvez sinalizar visualmente de algum modo essa correção nos dados
         formatted_log.trunked = true;
@@ -113,10 +112,20 @@ function getEventColor(eventType){
     }
 }
 
-
-function getForumPeriod(data, forum_id){
-    //tem q ser por aluno! o filtro deve ser feito nos logs de cd aluno, pois eles podem interagir em periodos diferentes com o forum.
-    
-    //let 
+function translateCustomClass(className){
+    switch (className) {
+        case EVENT_TYPES.LOGIN: return 'Login';            
+        case EVENT_TYPES.LOGOUT: return 'Logout';            
+        case EVENT_TYPES.MENSAGEM: return 'Troca de Mensagens';            
+        case EVENT_TYPES.RECURSO_VISUALIZADO: return 'Recurso Visualizado';            
+        case EVENT_TYPES.FORUM_VISUALIZACAO: return 'Fórum Visualizado';            
+        case EVENT_TYPES.FORUM_ACOMPANHAMENTO: return 'Inscrição p/ acompanhar Fórum';            
+        case EVENT_TYPES.FORUM_COLABORACAO: return 'Colaborou c/ o Fórum';            
+        case EVENT_TYPES.OUTROS: return 'Outros';            
+        default: return '!!erro!!'
+    }
 }
 
+function setElementVisibility(id, visibility){
+    d3.select("#"+id).style("display", (visibility == true) ? "block": "none");
+}

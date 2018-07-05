@@ -180,13 +180,22 @@ function updateBreadcrumbs(nodeArray, percentageString) {
 
     entering.append("svg:polygon")
         .attr("points", breadcrumbPoints)
-        .style("fill", function (d) { return sunburst_colors[d.name]; });
+        .style("fill", function (d) { return sunburst_colors[d.name]; })
+        .style("stroke","black")
+        .style("stroke-width", 1);
 
     entering.append("svg:text")
         .attr("x", (b.w + b.t) / 2)
         .attr("y", b.h / 2)
         .attr("dy", "0.35em")
         .attr("text-anchor", "middle")
+        .attr("fill", d =>{
+            if (["VisForum","msg"].includes(d.name)){
+                return "black";
+            } else {
+                return "white";
+            }
+        })
         .text(function (d) { return d.name; });
 
     // Set position for entering and updating nodes.
