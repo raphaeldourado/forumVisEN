@@ -16,12 +16,30 @@
 		<header>ForumVis</header>
 
 		<div class="tab">
+			<button class="tablinks" id="btSobre" onclick="openTab(event, 'Sobre')">Sobre</button>
 			<button class="tablinks" id="btGeral" onclick="openTab(event, 'Geral')">Geral</button>
 			<button class="tablinks" id="btAlunos" onclick="openTab(event, 'Alunos')">Alunos</button>
 		</div>
 		
+		<!-- SOBRE -->
+		<div id="Sobre" class="tabcontent">
+			<div style="width: 70%; text-align:justify">
+				<h2>ForumVis: feramenta de visualização de atividade em fóruns de AVAs*</h2>
+				<p>Esta ferramenta fornece duas visualizações interativas para auxiliar na análise do processo de aprendizagem de alunos de cursos EAD, com foco na postagem em fóruns virtuais.</p> 
+				<p>Os dados utilizados foram extraídos de uma instância da plataforma Moodle, utilizada por uma universidade pública para oferecer cursos superiores á distância.</p>
+				<p>São utilizados dois tipos de visualizações neste protótipo: Sequences Sunburst (na aba "Geral") e Gantt Charts (na aba "Alunos").</p>
+				<hr>
+				<p style="font-style: italic">*Projeto desenvolvido por <a href="https://cin.ufpe.br/~rasd2" target="_blank">Raphael Dourado</a>
+					para a disciplina Visualização de Dados (2018.1) do CIn-UFPE, sob orientação do prof. 
+					<a href="https://cin.ufpe.br/~nivan" target="_blank">Nivan Ferreira</a>.</p>
+			</div>
+		</div>
+
 		<!-- SUNBURST -->
 		<div id="Geral" class="tabcontent">
+			<div  style="width: 70%;"><p style="font-size: 10pt">Esta visualização permite identificar os caminhos mais comuns que os alunos percorrem 
+				entre a primeira visualização de um fórum pontuado e a postagem de sua contribuição. 
+				Passe o mouse sobre o gráfico para obter mais detalhes sobre cada caminho.</p></div>
 			<div id="sequence"></div>
 			<div id="sunburst-items">
 				<div id="chart">
@@ -49,7 +67,8 @@
 		
 		<!-- TIMELINE -->
 		<div id="Alunos" class="tabcontent">
-			<p>Preencha os filtros abaixo:</p>
+			<p>Esta visualização mostra os caminhos percorridos por cada aluno até realizar uma postagem. 
+				Preencha os filtros abaixo, selecione ao menos um aluno, e clique em "Visualizar" para gerar o gráfico:</p>
 
 			<nav class="nav-combos">
 				<label for="cbdisciplina" class="labelCombos">Disciplina<span class="fb-required">*</span></label>
@@ -168,7 +187,7 @@
 				drawTimeline(filter_options_local);					
 			}
 
-			document.getElementById("btGeral").click();
+			document.getElementById("btSobre").click();
 		</script>
 	</body>
 </html>
