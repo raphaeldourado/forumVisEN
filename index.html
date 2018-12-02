@@ -16,30 +16,29 @@
 		<header>ForumVis</header>
 
 		<div class="tab">
-			<button class="tablinks" id="btSobre" onclick="openTab(event, 'Sobre')">Sobre</button>
-			<button class="tablinks" id="btGeral" onclick="openTab(event, 'Geral')">Geral</button>
-			<button class="tablinks" id="btAlunos" onclick="openTab(event, 'Alunos')">Alunos</button>
+			<button class="tablinks" id="btSobre" onclick="openTab(event, 'Sobre')">About</button>
+			<button class="tablinks" id="btGeral" onclick="openTab(event, 'Geral')">Overview</button>
+			<button class="tablinks" id="btAlunos" onclick="openTab(event, 'Alunos')">Students</button>
 		</div>
 		
 		<!-- SOBRE -->
 		<div id="Sobre" class="tabcontent">
 			<div style="width: 70%; text-align:justify">
-				<h2>ForumVis: feramenta de visualização de atividade em fóruns de AVAs*</h2>
-				<p>Esta ferramenta fornece duas visualizações interativas para auxiliar na análise do processo de aprendizagem de alunos de cursos EAD, com foco na postagem em fóruns virtuais.</p> 
-				<p>Os dados utilizados foram extraídos de uma instância da plataforma Moodle, utilizada por uma universidade pública para oferecer cursos superiores á distância.</p>
-				<p>São utilizados dois tipos de visualizações neste protótipo: Sequences Sunburst (na aba "Geral") e Gantt Charts (na aba "Alunos").</p>
+				<h2>ForumVis: visualizing forum participation in VLEs*</h2>
+				<p>This prototype offers two interactive visualizations to aid teachers understand the process behind student colaboration in VLEs online forums.</p> 
+				<p>The dataset used in this project contains students' interactions on a Moodle instance, used by a public university in Brazil to offer distance-learning higher education.</p>
+				<p>We use two types of visualizations in this prototype: Sequences Sunburst ("Overview" tab) e Gantt Charts ("Students" tab).</p>
 				<hr>
-				<p style="font-style: italic">*Projeto desenvolvido por <a href="https://cin.ufpe.br/~rasd2" target="_blank">Raphael Dourado</a>
-					para a disciplina Visualização de Dados (2018.1) do CIn-UFPE, sob orientação do prof. 
+				<p style="font-style: italic">*This project was developed by <a href="https://cin.ufpe.br/~rasd2" target="_blank">Raphael Dourado</a> 
+					as part of the Data Visualization course (Spring 2018) at CIn-UFPE, taught by Professor  
 					<a href="https://cin.ufpe.br/~nivan" target="_blank">Nivan Ferreira</a>.</p>
 			</div>
 		</div>
 
 		<!-- SUNBURST -->
 		<div id="Geral" class="tabcontent">
-			<div  style="width: 70%;"><p style="font-size: 10pt">Esta visualização permite identificar os caminhos mais comuns que os alunos percorrem 
-				entre a primeira visualização de um fórum pontuado e a postagem de sua contribuição. 
-				Passe o mouse sobre o gráfico para obter mais detalhes sobre cada caminho.</p></div>
+			<div  style="width: 70%;"><p style="font-size: 10pt">This visualization shows an aggregated view of the steps taken by a group of students in the process of posting in a VLE online forum. We consider as <i>path</i> the actions performed between the first time the student visualizes a topic and the first time he posts on the forum. </p>
+			<p style="font-size: 10pt">You can hover the mouse over the graph to get more details about every path.</p></div>
 			<div id="sequence"></div>
 			<div id="sunburst-items">
 				<div id="chart">
@@ -52,14 +51,14 @@
 				<div id="sidebar">					
 					<!-- <input type="checkbox" id="togglelegend"> Legend<br/> -->
 					<div class="legenda-sunburst">Legenda:&nbsp;</div>
-					<div class="legenda-sunburst" style="background-color: cyan; color: black;">Mensagem</div>
-					<div class="legenda-sunburst" style="background-color: green; color: white;">Vis. de Recurso</div>
-					<div class="legenda-sunburst" style="background-color: yellow; color: black;">Vis. de Fórum</div>
-					<div class="legenda-sunburst" style="background-color: red; color: white;">Postagem</div>
+					<div class="legenda-sunburst" style="background-color: cyan; color: black;">Message sent/recvd</div>
+					<div class="legenda-sunburst" style="background-color: green; color: white;">Resource visualization</div>
+					<div class="legenda-sunburst" style="background-color: yellow; color: black;">Forum Visualization</div>
+					<div class="legenda-sunburst" style="background-color: red; color: white;">Posting</div>
 					<!-- <div id="legend" style="visibility: hidden;"></div> -->
 					<div id="explanation" style="visibility: hidden;">						
 						<span id="percentage"></span><br/>
-						seguiram este caminho
+						followed this path
 					</div>					
 				</div>		  
 			</div>
@@ -67,22 +66,22 @@
 		
 		<!-- TIMELINE -->
 		<div id="Alunos" class="tabcontent">
-			<p>Esta visualização mostra os caminhos percorridos por cada aluno até realizar uma postagem. 
-				Preencha os filtros abaixo, selecione ao menos um aluno, e clique em "Visualizar" para gerar o gráfico:</p>
+			<p>This visualization shows the paths taken by each student to post on a given forum topic. Student names were anonymized to preserve their identity. <br>
+				Please fill the fields below, select at least one student from the list, and click on "Visualize" to show the data.</p>
 
 			<nav class="nav-combos">
-				<label for="cbdisciplina" class="labelCombos">Disciplina<span class="fb-required">*</span></label>
+				<label for="cbdisciplina" class="labelCombos">Course<span class="fb-required">*</span></label>
 				<select class="combos-filtro" name="cbdisciplina" id="cbdisciplina" required="required" aria-required="true" disabled>
-					<option value="deafult" id="cbdisciplinas-default" selected value> Literatura Portuguesa </option>
+					<option value="deafult" id="cbdisciplinas-default" selected value> Portuguese Literature </option>
 				</select>
 
-				<label for="cbforum" class="labelCombos">Fórum<span class="fb-required">*</span></label>
+				<label for="cbforum" class="labelCombos">Topic<span class="fb-required">*</span></label>
 				<select class="combos-filtro" name="cbforum" id="cbforum" required="required" aria-required="true" onchange="loadForumStudentList()"></select>
 				
-				<button onclick="btFilterClick()">Visualizar</button>
+				<button onclick="btFilterClick()">Visualize</button>
 				
 				<div class="nav-students">
-					<label for="studentsList-div" class="studentsListMainLabel">Alunos</label>
+					<label for="studentsList-div" class="studentsListMainLabel">Students that posted on this forum (select at least one)*:</label>
 					<div id="studentsList-div"></div>
 				</div>		
 			</nav>			
@@ -91,28 +90,28 @@
 		<section id="tl-section" flex flex-full-center>
 			<div id="timeline-div"></div>
 			<div id="legenda-div">
-				<div class="legenda" style="margin-bottom: 8px; display: block;">Obs: utilize o mouse para dar zoom no gráfico</div>
-				<div class="legenda">Legenda:&nbsp;</div>
+				<div class="legenda" style="margin-bottom: 8px; display: block;">Note: you can use the mouse weel to zoom in and out in the visualization</div>
+				<div class="legenda">Key:&nbsp;</div>
 				<div class="legenda" style="background-color: black; color: white;">Login</div>
 				<div class="legenda" style="background-color: gray; color: black;">Logout</div>
-				<div class="legenda" style="background-color: cyan; color: black;">Mensagem</div>
-				<div class="legenda" style="background-color: green; color: white;">Vis. de Recurso</div>
-				<div class="legenda" style="background-color: yellow; color: black;">Vis. de Fórum</div>
-				<div class="legenda" style="background-color: orangered; color: black;">Acomp. de Fórum</div>
-				<div class="legenda" style="background-color: red; color: white;">Postagem</div>
-				<div class="legenda" style="background-color: purple; color: white;">Outros</div>
-				<div class="legenda" style="border-color: black; border-width: 1px; border-style: solid; color: black;">Evento rel. ao fórum escolhido</div>
+				<div class="legenda" style="background-color: cyan; color: black;">Message sent/rcvd</div>
+				<div class="legenda" style="background-color: green; color: white;">Resource Visualization</div>
+				<div class="legenda" style="background-color: yellow; color: black;">Forum Visualization</div>
+				<div class="legenda" style="background-color: orangered; color: black;">Forum followup</div>
+				<div class="legenda" style="background-color: red; color: white;">Post</div>
+				<div class="legenda" style="background-color: purple; color: white;">Other</div>
+				<div class="legenda" style="border-color: black; border-width: 1px; border-style: solid; color: black;">Events related to the chosen topic</div>
 			</div>
 		</section>
 
 		<footer>
-			--- Visualização de Dados 2018.1 - CIn-UFPE ---
+			CC BY-NC 4.0			
 		</footer>
 
 		<div id="tl-tooltip">
-			<h3 class="tl-tooltip-title"><strong>Evento: </strong><span id="tooltip-event-name"></span></h3>
-			<p> <strong>Início: </strong><span id="tooltip-timeStart"></span></p>
-			<p id="endTimeP"> <strong>Fim: </strong><span id="tooltip-timeEnd"></span></p>
+			<h3 class="tl-tooltip-title"><strong>Event: </strong><span id="tooltip-event-name"></span></h3>
+			<p> <strong>Start at: </strong><span id="tooltip-timeStart"></span></p>
+			<p id="endTimeP"> <strong>End at: </strong><span id="tooltip-timeEnd"></span></p>
 			<p id="extraInfo1P" style="display: none"> <strong id="extraInfoTitle1"></strong><span id="extraInfoText1"></span></p> 
 			<p id="extraInfo2P" style="display: none"> <strong id="extraInfoTitle2"></strong><span id="extraInfoText2"></span></p> 
 		</div>    

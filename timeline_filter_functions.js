@@ -66,15 +66,15 @@ function  loadForumStudentList(){
 
 function translateStudentId(id) {
     let student = DATASTORE.student_names.filter(d => { return d.userid == id; })[0];
-    return (student === undefined) ? "Não identificado" : student.user_name;
+    return (student === undefined) ? "Unknown" : student.user_name;
 }
 
 function translateForumId(id) {
     let forum = DATASTORE.forum_infos.filter(d => { return d.id_forum == id; })[0];
-    return (forum === undefined) ? "Não identificado" : forum.forum_name;
+    return (forum === undefined) ? "Unknown" : forum.forum_name;
 }
 
 function translateDiscussionId(id) {
     let discussion = DATASTORE.forum_infos.filter(d => { return d.id_discussion == id; })[0];
-    return (discussion === undefined) ? "Não identificado" : discussion.forum_name; //mostra nome do forum, ao inves da discussion. Mudar talvez depois
+    return (discussion === undefined) ? "Unknown" : discussion.forum_name; //mostra nome do forum, ao inves da discussion. Mudar talvez depois
 }

@@ -1,7 +1,7 @@
 //GLOBAL VARS
 let forum_infos, user_names;
 
-d3.select("header").html("Aguarde carregando...");
+d3.select("header").html("Loading...");
 
 //carrega dados para timeline
 d3.csv("data/data_disc-148_letras-2P-20151-Garanhuns.csv", function(data){

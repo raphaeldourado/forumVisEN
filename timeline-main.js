@@ -148,26 +148,26 @@
             switch (d.customClass) {
                 case EVENT_TYPES.MENSAGEM:
                     setElementVisibility("extraInfo1P", true);
-                    d3.select("#extraInfoTitle1").text("Destintário: ");
+                    d3.select("#extraInfoTitle1").text("To: ");
                     d3.select("#extraInfoText1").text(translateStudentId(d.relateduserid));
                     break;
                 case EVENT_TYPES.RECURSO_VISUALIZADO:
                     setElementVisibility("extraInfo1P", true);
-                    d3.select("#extraInfoTitle1").text("Tipo: ");
+                    d3.select("#extraInfoTitle1").text("Type: ");
                     d3.select("#extraInfoText1").text(d.objecttable || d.target);
                     break;
                 case EVENT_TYPES.FORUM_VISUALIZACAO:
                     setElementVisibility("extraInfo1P", true);
-                    d3.select("#extraInfoTitle1").text("Fórum: ");
+                    d3.select("#extraInfoTitle1").text("Topic: ");
                     let name = translateForumId(d.objectId);
-                    if (name == "Não identificado"){
+                    if (name == "Unknow"){
                         name = translateDiscussionId(d.objectId)
                     }
                     d3.select("#extraInfoText1").text(name);
                     break;
                 case EVENT_TYPES.FORUM_COLABORACAO:
                     setElementVisibility("extraInfo1P", true);
-                    d3.select("#extraInfoTitle1").text("Tipo: ");
+                    d3.select("#extraInfoTitle1").text("Type: ");
                     d3.select("#extraInfoText1").text(d.action);
                     break;
             

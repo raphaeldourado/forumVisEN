@@ -106,7 +106,7 @@ function removeTimeSpacesAndAlign(chart_data){
 function getEventColor(eventType){
     let result = color_map.filter(map_item=>{return map_item.event == eventType})[0];
     if (result === undefined){
-        throw "eventType invalido: " + eventType; 
+        throw "invalid eventType: " + eventType; 
     } else {
         return result.color;
     }
@@ -116,13 +116,13 @@ function translateCustomClass(className){
     switch (className) {
         case EVENT_TYPES.LOGIN: return 'Login';            
         case EVENT_TYPES.LOGOUT: return 'Logout';            
-        case EVENT_TYPES.MENSAGEM: return 'Troca de Mensagens';            
-        case EVENT_TYPES.RECURSO_VISUALIZADO: return 'Recurso Visualizado';            
-        case EVENT_TYPES.FORUM_VISUALIZACAO: return 'Fórum Visualizado';            
-        case EVENT_TYPES.FORUM_ACOMPANHAMENTO: return 'Inscrição p/ acompanhar Fórum';            
-        case EVENT_TYPES.FORUM_COLABORACAO: return 'Colaborou c/ o Fórum';            
-        case EVENT_TYPES.OUTROS: return 'Outros';            
-        default: return '!!erro!!'
+        case EVENT_TYPES.MENSAGEM: return 'Messaging';            
+        case EVENT_TYPES.RECURSO_VISUALIZADO: return 'Resource Visualized';            
+        case EVENT_TYPES.FORUM_VISUALIZACAO: return 'Forum Visualized';            
+        case EVENT_TYPES.FORUM_ACOMPANHAMENTO: return 'Subscription to follow thread';            
+        case EVENT_TYPES.FORUM_COLABORACAO: return 'Posted on Forum';            
+        case EVENT_TYPES.OUTROS: return 'Other';            
+        default: return '!!error!!'
     }
 }
 
