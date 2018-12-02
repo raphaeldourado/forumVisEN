@@ -1,8 +1,10 @@
-# ForumVis: feramenta de visualização de atividade em fóruns de AVAs
+# ForumVis: visualizing forum participation in VLEs
 
-Projeto desenvolvido para a disciplina Visualização de Dados (2018.1) do CIn-UFPE, sob orientação do prof. Nivan Ferreira.
-Demo disponível em: https://raphaeldourado.github.io/forumView-visualizacao-2018-1/
+This project was developed as part of the Data Visualization course (Spring 2018) at CIn-UFPE, taught by Professor Nivan Ferreira.
+You can access a demo at: https://raphaeldourado.github.io/forumVisEN/
 
-Esta ferramenta fornece duas visualizações interativas para auxiliar na análise do processo de aprendizagem de alunos de cursos EAD, com foco na postagem em fóruns virtuais. Os dados utilizados foram extraídos de uma instância da plataforma Moodle, utilizada por uma universidade pública para oferecer cursos superiores á distância.
+This prototype offers two interactive visualizations to aid teachers understand the process behind student colaboration in VLEs online forums.
 
-São utilizados dois tipos de visualizações neste protótipo: Sequences Sunburst (na aba "Geral") e Gantt Charts (na aba "Alunos").
+The dataset used in this project contains students' interactions on a Moodle instance, used by a public university in Brazil to offer distance higher education courses.
+
+We use two types of visualizations in this prototype: Sequences Sunburst Gantt Charts.
